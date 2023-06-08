@@ -16,20 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的
 # 在扩展类实例化前加载配置
 db = SQLAlchemy(app)
 
-# name = 'Grey Li'
-# movies = [
-#     {'title': 'My Neighbor Totoro', 'year': '1988'},
-#     {'title': 'Dead Poets Society', 'year': '1989'},
-#     {'title': 'A Perfect World', 'year': '1993'},
-#     {'title': 'Leon', 'year': '1994'},
-#     {'title': 'Mahjong', 'year': '1996'},
-#     {'title': 'Swallowtail Butterfly', 'year': '1996'},
-#     {'title': 'King of Comedy', 'year': '1999'},
-#     {'title': 'Devils on the Doorstep', 'year': '1999'},
-#     {'title': 'WALL-E', 'year': '2008'},
-#     {'title': 'The Pork of Music', 'year': '2012'},
-# ]
-
 
 class User(db.Model):  # 表名将会是 user（自动生成，小写处理）
     id = db.Column(db.Integer, primary_key=True)  # 主键
@@ -41,6 +27,11 @@ class Movie(db.Model):  # 表名将会是 movie
     title = db.Column(db.String(60))  # 电影标题
     year = db.Column(db.String(4))  # 电影年份
 
+
+@app.context_processor
+def inject_user():  # 函数名可以随意修改
+    user = User.query.first()
+    return dict(user=user)  # 需要返回字典，等同于 return {'user': user}
 
 
 @app.route('/')
@@ -59,6 +50,10 @@ def home():
 def user(name):
     return f'User: {escape(name)}'
 
+# 404页面
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 
