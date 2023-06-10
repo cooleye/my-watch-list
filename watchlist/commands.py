@@ -1,5 +1,6 @@
 import click
-from watchlist import app
+from watchlist.models import User,Movie
+from watchlist import app,db
 # ==========================定义命令==========================
 
 @app.cli.command()  # 注册为命令，可以传入 name 参数来自定义命令
